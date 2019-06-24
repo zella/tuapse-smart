@@ -1,0 +1,26 @@
+package org.zella.tuapse.smart.model.net;
+
+public class PlayInput {
+
+    public String hash;
+    public int index;
+    public String streaming;
+
+    public PlayInput() {
+    }
+
+    public PlayInput(String hash, int index, String streaming) {
+        this.hash = hash;
+        this.index = index;
+        this.streaming = streaming;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayInput{" +
+                "hash='" + hash + '\'' +
+                ", index=" + index +
+                ", streaming='" + streaming + '\'' +
+                '}';
+    }
+}

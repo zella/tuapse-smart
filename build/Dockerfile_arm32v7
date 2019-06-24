@@ -1,0 +1,17 @@
+FROM arm32v7/openjdk:11
+
+COPY qemu-arm-static /usr/bin
+
+RUN chmod +x /usr/bin/qemu-arm-static
+
+COPY assembly.jar /assembly.jar
+
+COPY x86/requirements.txt /requirements.txt
+
+COPY engine /engine
+
+RUN apt-get install -y python3 python3-pip python-dev portaudio19-dev
+
+RUN pip3 install -r requirements.txt
+
+ENTRYPOINT java -jar /assembly.jar

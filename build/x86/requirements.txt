@@ -1,0 +1,7 @@
+pathlib2
+setuptools
+google-assistant-library==1.0.0
+SpeechRecognition
+PyAudio
+gtts
+pygame

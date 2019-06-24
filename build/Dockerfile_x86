@@ -1,0 +1,13 @@
+FROM openjdk:11
+
+COPY assembly.jar /assembly.jar
+
+COPY x86/requirements.txt /requirements.txt
+
+COPY engine /engine
+
+RUN apt-get install -y python3 python3-pip python-dev portaudio19-dev
+
+RUN pip3 install -r requirements.txt
+
+ENTRYPOINT java -jar /assembly.jar
