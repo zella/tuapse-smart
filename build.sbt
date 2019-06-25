@@ -8,12 +8,14 @@ lazy val root = (project in file("."))
 
 assemblyMergeStrategy in assembly := {
     case x if x.contains("io.netty.versions.properties") => MergeStrategy.discard
-    case x if x.contains("libjnidispatch.so") => MergeStrategy.last
     case x =>
         val oldStrategy = (assemblyMergeStrategy in assembly).value
         oldStrategy(x)
 }
+
 test in assembly := {}
+
+mainClass in assembly := Some("org.zella.tuapse.smart.RunnerMain")
 
 assemblyOutputPath in assembly := file("build/assembly.jar")
 

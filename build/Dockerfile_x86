@@ -6,7 +6,7 @@ COPY x86/requirements.txt /requirements.txt
 
 COPY engine /engine
 
-RUN apt-get -y update && apt-get install -y python3 python3-pip python-dev portaudio19-dev
+RUN apt-get -y update && apt-get install -y python3 python3-pip python-dev portaudio19-dev python3-pyaudio
 
 RUN pip3 install -r requirements.txt
 

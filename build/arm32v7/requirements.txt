@@ -4,4 +4,3 @@ google-assistant-library==1.0.1
 SpeechRecognition
 PyAudio
 gtts
-pygame
