@@ -4,6 +4,9 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zella.tuapse.smart.RunnerMain;
 import org.zella.tuapse.smart.model.net.PlayInput;
 import org.zella.tuapse.smart.model.net.SearchInput;
 import org.zella.tuapse.smart.model.net.TFileWithMeta;
@@ -18,6 +21,9 @@ import java.util.concurrent.TimeUnit;
 import static org.asynchttpclient.Dsl.asyncHttpClient;
 
 public class TuapseHttp {
+
+    private static final Logger logger = LoggerFactory.getLogger(TuapseHttp.class);
+
 
     private static final String TuapseOrigin = (System.getenv().get("TUAPSE_ORIGIN"));
     private static final int TuapseTimeout = Integer.parseInt(System.getenv().getOrDefault("TUAPSE_TIMEOUT_SEC", "60"));
@@ -41,13 +47,14 @@ public class TuapseHttp {
         var extsArr = new ArrayList<String>();
         input.extensions.ifPresent(extsArr::addAll);
         if (!extsArr.isEmpty())
-            params.put("extensions", extsArr);
+            params.put("ext", extsArr);
 
         return Single.fromFuture(client.prepareGet(TuapseOrigin + "/api/v1/search_file")
                 .setQueryParams(params)
                 .execute(), TuapseTimeout, TimeUnit.SECONDS, Schedulers.io())
                 .map(r -> Json.mapper.readValue(r.getResponseBody(), TFileWithMeta.class))
                 .map(t -> new SearchResult(Optional.of(t)))
+                .doOnError(e -> logger.error("Http error", e))
                 .onErrorReturnItem(new SearchResult(Optional.empty()));
     }
 

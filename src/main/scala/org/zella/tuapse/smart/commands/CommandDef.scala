@@ -4,6 +4,8 @@ import java.nio.file.{Path, Paths}
 
 import ai.x.play.json.Jsonx
 import better.files.File
+import org.slf4j.{Logger, LoggerFactory}
+import org.zella.tuapse.smart.RunnerMain
 import org.zella.tuapse.smart.utils.Utils
 import play.api.libs.json.{Format, Json}
 
@@ -79,6 +81,8 @@ case class CommandDef(sentence: List[WordLike]) {
 
 object CommandDef {
 
+  val logger = LoggerFactory.getLogger(classOf[CommandDef])
+
   case class MediaName(text: String)
 
   implicit val format: Format[CommandDef] = Json.format[CommandDef]
@@ -89,13 +93,15 @@ object CommandDef {
 
   //support "find media subject"
   def extractMediaSubject(text: String): Option[MediaName] = {
-    commands
+    val subject = commands
       .flatMap(c => c.matches(Utils.wordsLowerCase(text).asScala)).headOption
       .flatMap(params => {
-        if (params.keySet == Set("find", "media", "subject"))
+        if (params.keySet == Set("play", "media", "subject"))
           Some(MediaName(params("subject")))
         else None
       })
+    logger.info(s"Media recognized: $subject")
+    subject
   }
 
 }
