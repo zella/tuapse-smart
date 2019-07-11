@@ -1,9 +1,13 @@
 package org.zella.tuapse.smart.subprocess;
 
 import com.github.davidmoten.rx2.Strings;
-import com.github.zella.rxprocess2.Exit;
 import com.github.zella.rxprocess2.RxNuProcessBuilder;
-import io.reactivex.*;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -13,6 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Subprocess {
+
+
+    private static final Logger logger = LoggerFactory.getLogger(Subprocess.class);
+
 
     private static final String TTSExec = (System.getenv().getOrDefault("TTS_EXEC", "engine/gtts.py"));
     private static final String TTSLang = (System.getenv().getOrDefault("TTS_LANG", "ru"));
@@ -45,6 +53,8 @@ public class Subprocess {
                 .fromCommand(List.of("python3", RecognizeExec, RecognizeKey, RecognizeLang))
                 .asStdOutSingle()
                 .map(String::new)
+                .doOnSuccess(logger::debug)
+                .doOnError(e -> logger.error("Recognize fail", e))
                 .map(s -> Arrays.stream(s.split(System.lineSeparator()))
                         .filter(ss -> ss.startsWith("[recognized]"))
                         .map(sss -> sss.replace("[recognized]", "")).collect(Collectors.joining()));
