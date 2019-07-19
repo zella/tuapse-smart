@@ -45,7 +45,7 @@ public class RunnerMain {
                                 .flatMapCompletable(searchResult -> searchResult.found
                                         .map(t -> {
                                             logger.info("Found: " + t.file.path);
-                                            return tuapseHttp.play(new PlayInput(t.hash, t.file.index, StreamingDevice))
+                                            return tuapseHttp.play(new PlayInput(t.hash, t.file.path, StreamingDevice))
                                                     .flatMapCompletable(statusCode -> Subprocess.playGtts(AnswerStartPlaying + " " + t.file.fileName()));
                                         })
                                         .orElse(Subprocess.playGtts(AnswerNotFound)))
